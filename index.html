@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Math Monster Hunter</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#10131a;color:#f4f4f4}
+button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;padding:20px}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+h1{margin:0;font-size:30px}.sub{color:#aeb6c6}.panel{background:#181d27;border:1px solid #303846;border-radius:18px;padding:18px;box-shadow:0 8px 30px #0005}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.monster{text-align:center;min-height:350px;display:flex;flex-direction:column;justify-content:center}
+.monster-art{font-size:130px;filter:drop-shadow(0 12px 12px #0008);animation:float 2.5s ease-in-out infinite}@keyframes float{50%{transform:translateY(-8px)}}
+.bar{height:18px;background:#343a46;border-radius:20px;overflow:hidden;margin:8px 0 14px}.fill{height:100%;transition:.35s}.enemy{background:#c44}.player{background:#4a9}.xp{background:#8b6cff}
+.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.stat{background:#222936;padding:8px 12px;border-radius:10px}
+.question{font-size:28px;line-height:1.45;margin:20px 0;text-align:center;min-height:90px}.answers{display:flex;gap:10px;justify-content:center}.answers input{width:260px;padding:14px;border-radius:10px;border:1px solid #495263;background:#0e1117;color:#fff;text-align:center}
+.btn{border:0;border-radius:10px;padding:12px 18px;background:#6c7cff;color:#fff;font-weight:700}.btn.alt{background:#303847}.btn.danger{background:#9e3e3e}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.controls select{padding:10px;background:#222936;color:#fff;border:1px solid #414b5d;border-radius:10px}
+.log{max-height:160px;overflow:auto;background:#0d1016;border-radius:10px;padding:10px;color:#cbd3e0}.row{display:flex;justify-content:space-between;gap:10px}
+.toast{position:fixed;inset:18px 18px auto auto;background:#fff;color:#111;padding:14px 18px;border-radius:12px;transform:translateY(-130%);transition:.3s;font-weight:800;z-index:10}.toast.show{transform:none}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.question{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><h1>⚔️ Math Monster Hunter</h1><div class="sub">문제를 풀어 몬스터를 사냥하세요.</div></div>
+<button class="btn alt" id="resetBtn">진행도 초기화</button></header>
+
+<div class="panel" style="margin-bottom:16px">
+<div class="controls">
+<label>훈련장 <select id="db"></select></label>
+<label>단원 <select id="unit"></select></label>
+</div>
+</div>
+
+<div class="grid">
+<section class="panel monster">
+<div id="monsterArt" class="monster-art">🐉</div>
+<h2 id="monsterName">천뢰룡</h2>
+<div class="bar"><div id="enemyBar" class="fill enemy" style="width:100%"></div></div>
+<div class="row"><span>HP</span><b id="enemyHp">1500 / 1500</b></div>
+<div class="stats">
+<div class="stat">Lv.<span id="monsterLv">1</span></div>
+<div class="stat">공격 <span id="monsterAtk">25</span></div>
+<div class="stat">방어 <span id="monsterDef">5</span></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="row"><span id="stage">중1-1 · 문자와 식</span><b id="typeInfo">유형 1 / 100</b></div>
+<div class="question" id="question">문제를 불러오는 중...</div>
+<div class="answers"><input id="answer" type="text" inputmode="decimal" placeholder="정답 입력"><button class="btn" id="submit">공격!</button></div>
+<div style="margin-top:16px">
+<div class="row"><span>❤️ 내 HP</span><b id="playerHp">100 / 100</b></div>
+<div class="bar"><div id="playerBar" class="fill player" style="width:100%"></div></div>
+<div class="row"><span>🔥 유형 콤보</span><b id="combo">0</b></div>
+<div class="row"><span>⭐ 경험치</span><b id="xpText">0 / 100</b></div>
+<div class="bar"><div id="xpBar" class="fill xp" style="width:0%"></div></div>
+</div>
+<h3>전투 기록</h3><div class="log" id="log"></div>
+</section>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const DB = {
+  elementary:{name:"초등 훈련장",file:"elementary.json"},
+  middle1_1:{name:"중학교 1학년 1학기",file:"middle1_1.json"},
+  middle1_2:{name:"중학교 1학년 2학기",file:"middle1_2.json"},
+  middle2_1:{name:"중학교 2학년 1학기",file:"middle2_1.json"},
+  middle2_2:{name:"중학교 2학년 2학기",file:"middle2_2.json"},
+  middle3_1:{name:"중학교 3학년 1학기",file:"middle3_1.json"},
+  middle3_2:{name:"중학교 3학년 2학기",file:"middle3_2.json"},
+  high1_1:{name:"고등학교 1학년 1학기",file:"high1_1.json"},
+  high1_2:{name:"고등학교 1학년 2학기",file:"high1_2.json"},
+  high2_1:{name:"고등학교 2학년 1학기",file:"high2_1.json"},
+  high2_2:{name:"고등학교 2학년 2학기",file:"high2_2.json"},
+  high3_1:{name:"고등학교 3학년 1학기",file:"high3_1.json"},
+  high3_2:{name:"고등학교 3학년 2학기",file:"high3_2.json"}
+};
+let data={}, currentKey="middle1_1", currentUnit=1, q=null;
+let state=JSON.parse(localStorage.mathMonsterHunter||'null')||{hp:100,xp:0,level:1,monsterLv:1,mastery:{},wins:0};
+const $=id=>document.getElementById(id), rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1300)}
+function log(t){$("log").innerHTML="<div>"+t+"</div>"+$("log").innerHTML}
+function save(){localStorage.mathMonsterHunter=JSON.stringify(state)}
+async function loadDB(k){
+  currentKey=k; const r=await fetch(DB[k].file); data=await r.json();
+  $("unit").innerHTML=data.units.map(u=>`<option value="${u.unit_no}">${u.unit_no}. ${u.name}</option>`).join("");
+  currentUnit=1; newQuestion();
+}
+function makeQuestion(type){
+  const d=type.difficulty, a=rand(1+d,9+d*4), b=rand(1+d,9+d*4);
+  const c=rand(1,9+d);
+  let ans, text;
+  const f=type.type_name.split(" ")[0];
+  if(type.unit.includes("소인수")) { let x=a*b; ans=x; text=`${a} × ${b} = ?`; }
+  else if(type.unit.includes("정수")||type.unit.includes("유리수")) { ans=a-b; text=`${a} - ${b} = ?`; }
+  else if(type.unit.includes("일차방정식")) { ans=(c+b)/a; text=`${a}x - ${b} = ${c}  에서 x = ?`; }
+  else if(type.unit.includes("부등식")) { ans=(c+b)/a; text=`${a}x - ${b} < ${c} 일 때 경계값 x = ? (실수)`; }
+  else if(type.unit.includes("식의 계산")||type.unit.includes("다항식")) { ans=a*b+a; text=`${a}(${b}+1) = ?`; }
+  else if(type.unit.includes("제곱근")) { const n=a*a; ans=a; text=`√${n} = ?`; }
+  else if(type.unit.includes("함수")) { ans=a*c+b; text=`f(x)=${a}x+${b}, f(${c}) = ?`; }
+  else if(type.unit.includes("수열")) { ans=a+4*b; text=`첫항 ${a}, 공차 ${b}인 등차수열의 5번째 항 = ?`; }
+  else if(type.unit.includes("확률")) { ans=`${a}/${a+b}`; text=`성공 ${a}개, 실패 ${b}개일 때 성공 확률 = ? (기약분수)`; }
+  else if(type.unit.includes("미분")) { ans=a; text=`f(x)=${a}x²+${b}x, f'(x)의 x항 계수 = ?`; }
+  else if(type.unit.includes("적분")) { ans=a; text=`∫ ${a} dx = ? 의 x의 계수는?`; }
+  else if(type.unit.includes("삼각")||type.unit.includes("삼각비")) { ans=a; text=`삼각비 연습: 기준값 ${a}, 단순 계산 결과 = ?`; }
+  else { ans=a*b+c; text=`${a} × ${b} + ${c} = ?`; }
+  return {text,ans};
+}
+function getTypes(){return data.problem_types.filter(x=>x.unit_no===currentUnit)}
+function newQuestion(){
+  const types=getTypes(); if(!types.length)return;
+  const key=types[rand(0,types.length-1)].id; const type=types.find(x=>x.id===key);
+  q={type,...makeQuestion(type)};$("question").textContent=q.text;
+  const mastery=state.mastery[q.type.id]||0;
+  $("typeInfo").textContent=`유형 ${q.type.type_no} / 100 · 숙련 ${mastery}`;
+  $("stage").textContent=`${DB[currentKey].name} · ${q.type.unit}`;
+}
+function num(v){return Number(String(v).replace(/,/g,"").trim())}
+function attack(){
+ if(!q)return;
+ const input=$("answer").value.trim(); if(!input)return;
+ const correct=typeof q.ans==="number"?Math.abs(num(input)-q.ans)<1e-9:input===String(q.ans);
+ const id=q.type.id; state.mastery[id]=state.mastery[id]||0;
+ if(correct){
+   state.mastery[id]++; state.xp+=10; const m=state.mastery[id];
+   const combo=Math.min(m,10), damage=80+q.type.difficulty*20+combo*20;
+   state.monsterHp=(state.monsterHp||1500)-damage; state.wins++;
+   $("combo").textContent=combo; toast(`⚔️ 정답! ${damage} DAMAGE`);
+   log(`⚔️ 정답 · ${q.type.type_name} · ${damage} 피해`);
+   if(m===2){toast("🔥 같은 유형 2연속 성공! 난이도 UP");log("🔥 TYPE COMBO ×2 · 다음 문제 난이도 상승");}
+   if(state.monsterHp<=0){state.monsterLv++;state.monsterHp=1200+state.monsterLv*300;toast("🏆 몬스터 처치!");log("🏆 몬스터 처치! 더 강한 몬스터 등장");}
+ }else{
+   const dmg=8+q.type.difficulty*4+state.monsterLv*2; state.hp-=dmg;
+   $("combo").textContent=0; toast(`💥 오답! ${dmg} DAMAGE`);
+   log(`💥 오답 · 정답은 ${q.ans} · 내 HP -${dmg}`);
+   if(state.hp<=0){state.hp=100;state.xp=Math.max(0,state.xp-20);toast("☠️ 쓰러졌습니다. 다시 도전!");log("☠️ 회복하여 전투를 계속합니다.");}
+ }
+ state.level=1+Math.floor(state.xp/100); save(); render(); $("answer").value=""; newQuestion();
+}
+function render(){
+ const max=1200+state.monsterLv*300; state.monsterHp=state.monsterHp||max;
+ $("enemyHp").textContent=`${Math.max(0,state.monsterHp)} / ${max}`;$("enemyBar").style.width=Math.max(0,state.monsterHp/max*100)+"%";
+ $("monsterLv").textContent=state.monsterLv;$("monsterAtk").textContent=25+state.monsterLv*3;$("monsterDef").textContent=5+state.monsterLv;
+ $("playerHp").textContent=`${state.hp} / 100`;$("playerBar").style.width=state.hp+"%";
+ $("xpText").textContent=`${state.xp%100} / 100`;$("xpBar").style.width=(state.xp%100)+"%";
+ $("monsterName").textContent=["천뢰룡","화염아룡","빙설괴수","암흑왕","폭풍룡"][state.monsterLv%5];
+}
+$("db").innerHTML=Object.entries(DB).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join("");
+$("db").value=currentKey;
+$("db").onchange=e=>loadDB(e.target.value);
+$("unit").onchange=e=>{currentUnit=+e.target.value;newQuestion()};
+$("submit").onclick=attack;$("answer").onkeydown=e=>{if(e.key==="Enter")attack()};
+$("resetBtn").onclick=()=>{if(confirm("모든 진행도를 삭제할까요?")){localStorage.removeItem("mathMonsterHunter");location.reload()}};
+loadDB(currentKey).then(render);
+</script>
+</body></html>
