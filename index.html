@@ -3,157 +3,149 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Math Monster Hunter</title>
+<title>Math Hunter - 중1-2 기본 도형</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#10131a;color:#f4f4f4}
-button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;padding:20px}
-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
-h1{margin:0;font-size:30px}.sub{color:#aeb6c6}.panel{background:#181d27;border:1px solid #303846;border-radius:18px;padding:18px;box-shadow:0 8px 30px #0005}
-.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.monster{text-align:center;min-height:350px;display:flex;flex-direction:column;justify-content:center}
-.monster-art{font-size:130px;filter:drop-shadow(0 12px 12px #0008);animation:float 2.5s ease-in-out infinite}@keyframes float{50%{transform:translateY(-8px)}}
-.bar{height:18px;background:#343a46;border-radius:20px;overflow:hidden;margin:8px 0 14px}.fill{height:100%;transition:.35s}.enemy{background:#c44}.player{background:#4a9}.xp{background:#8b6cff}
-.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.stat{background:#222936;padding:8px 12px;border-radius:10px}
-.question{font-size:28px;line-height:1.45;margin:20px 0;text-align:center;min-height:90px}.answers{display:flex;gap:10px;justify-content:center}.answers input{width:260px;padding:14px;border-radius:10px;border:1px solid #495263;background:#0e1117;color:#fff;text-align:center}
-.btn{border:0;border-radius:10px;padding:12px 18px;background:#6c7cff;color:#fff;font-weight:700}.btn.alt{background:#303847}.btn.danger{background:#9e3e3e}
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.controls select{padding:10px;background:#222936;color:#fff;border:1px solid #414b5d;border-radius:10px}
-.log{max-height:160px;overflow:auto;background:#0d1016;border-radius:10px;padding:10px;color:#cbd3e0}.row{display:flex;justify-content:space-between;gap:10px}
-.toast{position:fixed;inset:18px 18px auto auto;background:#fff;color:#111;padding:14px 18px;border-radius:12px;transform:translateY(-130%);transition:.3s;font-weight:800;z-index:10}.toast.show{transform:none}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.question{font-size:23px}}
+*{box-sizing:border-box}body{margin:0;background:#0b1018;color:#eef2f7;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+.app{max-width:1280px;margin:auto;min-height:100vh;padding:18px}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 4px 18px}
+h1{margin:0;font-size:28px}.sub{color:#93a0b2;font-size:13px}
+.badge{padding:7px 12px;border:1px solid #344052;border-radius:20px;background:#141c28}
+.battle{display:grid;grid-template-columns:1fr 1.15fr;gap:16px}
+.panel{background:#121a25;border:1px solid #283446;border-radius:18px;box-shadow:0 14px 40px #0005}
+.arena{min-height:610px;position:relative;overflow:hidden;background:radial-gradient(circle at 70% 35%,#314050,transparent 28%),linear-gradient(150deg,#17222c,#0b1118)}
+.arena:after{content:"";position:absolute;inset:auto -10% -70px;height:210px;background:#0a0e14;border-radius:50%}
+.floor{position:absolute;bottom:80px;left:12%;width:76%;height:28px;background:#27323d;border-radius:50%;filter:blur(2px)}
+.hunter{position:absolute;bottom:112px;left:18%;font-size:100px;z-index:2;filter:drop-shadow(0 15px 10px #0008);animation:idle 2.5s ease-in-out infinite}
+.monster{position:absolute;right:13%;bottom:110px;font-size:150px;z-index:2;filter:drop-shadow(0 18px 10px #0009);animation:monster 1.8s ease-in-out infinite}
+.monster.hit{animation:hit .45s}.monster.attack{animation:attack .7s}
+@keyframes idle{50%{transform:translateY(-7px)}}@keyframes monster{50%{transform:translateY(-10px) rotate(1deg)}}@keyframes hit{25%{transform:translateX(20px) rotate(8deg)}70%{transform:translateX(-10px)}}@keyframes attack{45%{transform:translateX(-130px) scale(1.08)}}
+.hp{position:absolute;z-index:4;width:42%;top:24px}.enemyhp{right:5%}.playerhp{left:5%}
+.hp label{font-size:13px}.bar{height:13px;background:#273141;border-radius:10px;overflow:hidden;margin-top:6px}.fill{height:100%;width:100%;background:#46c77a;transition:.35s}.enemyhp .fill{background:#e64b58}
+.status{position:absolute;z-index:5;top:105px;left:0;right:0;text-align:center;font-weight:800;color:#ffd36b}
+.damage{position:absolute;z-index:6;right:19%;top:230px;font-size:32px;font-weight:900;color:#ffcf57;opacity:0;pointer-events:none}
+.damage.show{animation:float .8s}.damage.bad{color:#ff6570}
+@keyframes float{0%{opacity:0;transform:translateY(20px) scale(.7)}25%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.2)}}
+.question{padding:24px}.topline{display:flex;justify-content:space-between;color:#9eacbd;font-size:13px}
+h2{font-size:22px;margin:12px 0}.questionbox{min-height:180px;padding:22px;border-radius:14px;background:#0d141e;border:1px solid #2a384a;font-size:25px;display:flex;align-items:center;justify-content:center;text-align:center}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.ans{padding:15px;border:1px solid #34445a;background:#172232;color:white;border-radius:12px;font-size:17px;cursor:pointer}.ans:hover{background:#203149}.ans:disabled{opacity:.55;cursor:default}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.card{padding:13px;border-radius:12px;background:#0d141e;border:1px solid #293649}.muted{color:#8f9cad;font-size:12px}.value{font-weight:800;margin-top:3px}
+.controls{display:flex;gap:8px;margin-top:14px}.btn{flex:1;padding:12px;border:0;border-radius:11px;background:#26364b;color:#fff;font-weight:700;cursor:pointer}.btn:hover{background:#334963}
+.log{margin-top:14px;max-height:105px;overflow:auto;color:#aab6c5;font-size:13px}.log div{padding:3px 0}
+@media(max-width:850px){.battle{grid-template-columns:1fr}.arena{min-height:420px}.monster{font-size:110px}.hunter{font-size:75px}}
 </style>
 </head>
 <body>
 <div class="app">
-<header><div><h1>⚔️ Math Monster Hunter</h1><div class="sub">문제를 풀어 몬스터를 사냥하세요.</div></div>
-<button class="btn alt" id="resetBtn">진행도 초기화</button></header>
-
-<div class="panel" style="margin-bottom:16px">
-<div class="controls">
-<label>훈련장 <select id="db"></select></label>
-<label>단원 <select id="unit"></select></label>
-</div>
-</div>
-
-<div class="grid">
-<section class="panel monster">
-<div id="monsterArt" class="monster-art">🐉</div>
-<h2 id="monsterName">천뢰룡</h2>
-<div class="bar"><div id="enemyBar" class="fill enemy" style="width:100%"></div></div>
-<div class="row"><span>HP</span><b id="enemyHp">1500 / 1500</b></div>
-<div class="stats">
-<div class="stat">Lv.<span id="monsterLv">1</span></div>
-<div class="stat">공격 <span id="monsterAtk">25</span></div>
-<div class="stat">방어 <span id="monsterDef">5</span></div>
-</div>
+<header><div><h1>⚔️ MATH HUNTER</h1><div class="sub">중학교 1학년 2학기 · 기본 도형 훈련장</div></div><div class="badge">유형 <span id="typeNo">001</span> / 100</div></header>
+<div class="battle">
+<section class="panel arena">
+<div class="hp playerhp"><label>헌터 HP <b id="playerHpText">100 / 100</b></label><div class="bar"><div id="playerHp" class="fill"></div></div></div>
+<div class="hp enemyhp"><label>괴수 HP <b id="enemyHpText">1000 / 1000</b></label><div class="bar"><div id="enemyHp" class="fill"></div></div></div>
+<div id="status" class="status">전투 시작!</div>
+<div id="damage" class="damage"></div>
+<div class="floor"></div><div class="hunter">🛡️</div><div id="monster" class="monster">🐲</div>
 </section>
-
-<section class="panel">
-<div class="row"><span id="stage">중1-1 · 문자와 식</span><b id="typeInfo">유형 1 / 100</b></div>
-<div class="question" id="question">문제를 불러오는 중...</div>
-<div class="answers"><input id="answer" type="text" inputmode="decimal" placeholder="정답 입력"><button class="btn" id="submit">공격!</button></div>
-<div style="margin-top:16px">
-<div class="row"><span>❤️ 내 HP</span><b id="playerHp">100 / 100</b></div>
-<div class="bar"><div id="playerBar" class="fill player" style="width:100%"></div></div>
-<div class="row"><span>🔥 유형 콤보</span><b id="combo">0</b></div>
-<div class="row"><span>⭐ 경험치</span><b id="xpText">0 / 100</b></div>
-<div class="bar"><div id="xpBar" class="fill xp" style="width:0%"></div></div>
+<section class="panel question">
+<div class="topline"><span id="category">기본 도형</span><span>COMBO × <b id="combo">0</b></span></div>
+<h2 id="typeName">선분의 길이 구하기</h2>
+<div id="question" class="questionbox"></div>
+<div id="answers" class="answers"></div>
+<div class="info">
+<div class="card"><div class="muted">문제 LEVEL</div><div class="value">Lv.<span id="level">1</span></div></div>
+<div class="card"><div class="muted">다음 레벨까지</div><div class="value"><span id="progress">2</span>회 정답</div></div>
+<div class="card"><div class="muted">현재 공격력</div><div class="value"><span id="damagePower">100</span></div></div>
+<div class="card"><div class="muted">정답 누적</div><div class="value"><span id="correct">0</span>회</div></div>
 </div>
-<h3>전투 기록</h3><div class="log" id="log"></div>
+<div class="controls"><button class="btn" id="nextBtn" onclick="newQuestion()" disabled>다음 문제</button><button class="btn" onclick="resetGame()">전투 재시작</button></div>
+<div id="log" class="log"></div>
 </section>
 </div>
 </div>
-<div class="toast" id="toast"></div>
 <script>
-const DB = {
-  elementary:{name:"초등 훈련장",file:"elementary.json"},
-  middle1_1:{name:"중학교 1학년 1학기",file:"middle1_1.json"},
-  middle1_2:{name:"중학교 1학년 2학기",file:"middle1_2.json"},
-  middle2_1:{name:"중학교 2학년 1학기",file:"middle2_1.json"},
-  middle2_2:{name:"중학교 2학년 2학기",file:"middle2_2.json"},
-  middle3_1:{name:"중학교 3학년 1학기",file:"middle3_1.json"},
-  middle3_2:{name:"중학교 3학년 2학기",file:"middle3_2.json"},
-  high1_1:{name:"고등학교 1학년 1학기",file:"high1_1.json"},
-  high1_2:{name:"고등학교 1학년 2학기",file:"high1_2.json"},
-  high2_1:{name:"고등학교 2학년 1학기",file:"high2_1.json"},
-  high2_2:{name:"고등학교 2학년 2학기",file:"high2_2.json"},
-  high3_1:{name:"고등학교 3학년 1학기",file:"high3_1.json"},
-  high3_2:{name:"고등학교 3학년 2학기",file:"high3_2.json"}
-};
-let data={}, currentKey="middle1_1", currentUnit=1, q=null;
-let state=JSON.parse(localStorage.mathMonsterHunter||'null')||{hp:100,xp:0,level:1,monsterLv:1,mastery:{},wins:0};
+const types=[
+"점의 이름 읽기","점의 위치 찾기","직선의 이름 읽기","직선의 기호 나타내기","선분의 이름 읽기","선분의 기호 나타내기","반직선의 이름 읽기","반직선의 방향 구분","같은 직선 위의 점 찾기","한 직선 위 점의 개수",
+"두 점을 지나는 직선","두 점을 잇는 선분","한 점에서 시작하는 반직선","서로 다른 직선 찾기","서로 다른 반직선 찾기","선분과 직선 구별","선분과 반직선 구별","직선과 반직선 구별","도형의 기호 해석","기본 도형 종합 판별",
+"선분의 길이 구하기","같은 길이의 선분 찾기","선분의 중점 찾기","중점의 의미 이해","중점까지의 거리","전체 선분 길이 구하기","한 부분의 길이 구하기","두 부분의 길이 비교","중점 조건으로 미지수 구하기","여러 선분의 길이 계산",
+"선분의 길이와 수직선","두 점 사이 거리","등분점 찾기","2등분점 찾기","3등분점 찾기","4등분점 찾기","등분점 사이 거리","여러 등분점의 위치","등분 조건에서 전체 길이","선분 분할 종합",
+"두 직선의 교점","두 선분의 교점","직선과 선분의 교점","교점의 개수","여러 직선의 교점","두 직선의 위치 관계","평행한 두 직선 찾기","만나는 두 직선 찾기","일치하는 두 직선","직선의 위치 관계 종합",
+"각의 이름 읽기","각의 기호 읽기","각의 꼭짓점 찾기","각의 변 찾기","각의 내부 판별","각의 외부 판별","같은 각 찾기","각의 크기 비교","각의 크기 계산","각의 종류 판별",
+"직각 판별","예각 판별","둔각 판별","평각 판별","각의 크기로 종류 찾기","미지의 각 구하기","두 각의 합","두 각의 차","직각에서 미지각","평각에서 미지각",
+"맞꼭지각 찾기","맞꼭지각의 크기","맞꼭지각을 이용한 미지각","맞꼭지각의 관계 판별","여러 맞꼭지각 찾기","각의 이등분선 찾기","각의 이등분선의 의미","이등분된 각의 크기","전체 각에서 절반 구하기","이등분 조건으로 미지수",
+"수직인 두 직선","수직 관계 판별","수직선의 기호","수선의 발 찾기","점에서 직선에 내린 수선","수선의 길이","점과 직선 사이의 거리","여러 점 중 최단거리","수선 조건에서 길이 구하기","수직·거리 종합",
+"평행선 판별","평행선의 기호","한 점을 지나가는 평행선","평행선과 교선","평행선 사이 거리","평행선 조건 찾기","평행·수직 관계 종합","점·직선·각 종합 판별","여러 조건에서 미지각 구하기","기본 도형 종합 사고형"];
+
+let state={type:0,level:1,correct:0,streak:0,player:100,enemy:1000,answered:false,need:2};
 const $=id=>document.getElementById(id), rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
-function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1300)}
-function log(t){$("log").innerHTML="<div>"+t+"</div>"+$("log").innerHTML}
-function save(){localStorage.mathMonsterHunter=JSON.stringify(state)}
-async function loadDB(k){
-  currentKey=k; const r=await fetch(DB[k].file); data=await r.json();
-  $("unit").innerHTML=data.units.map(u=>`<option value="${u.unit_no}">${u.unit_no}. ${u.name}</option>`).join("");
-  currentUnit=1; newQuestion();
+function gcd(a,b){while(b){[a,b]=[b,a%b]}return Math.abs(a)}
+function setText(id,v){$(id).textContent=v}
+function log(t){let d=document.createElement("div");d.textContent=t;$("log").prepend(d)}
+function makeQuestion(){
+  const t=state.type+1, lv=state.level;
+  let q,ans,opts;
+  // 유형군별로 실제로 풀 수 있는 숫자형 문항을 생성. 이후 유형별 전용 생성기로 확장 가능.
+  if(t<=20){
+    const names=["A","B","C","D"], a=names[rand(0,3)], b=names[rand(0,3)];
+    if(t%4===1){q=`다음 보기에서 점을 나타내는 기호는 무엇인가? ① ∠A ② A ③ AB ④ ↔AB`;ans="② A";opts=["① ∠A","② A","③ AB","④ ↔AB"]}
+    else if(t%4===2){let x=rand(-8,8),y=rand(-8,8);q=`점 P(${x}, ${y})가 있다고 할 때 x좌표는?`;ans=String(x);opts=shuffle([String(x),String(y),String(x+1),String(x-1)])}
+    else {q=`서로 다른 두 점 A, B를 지나는 도형은?`;ans="직선 AB";opts=shuffle(["선분 AB","직선 AB","반직선 AB","각 A"])}
+  } else if(t<=40){
+    let whole=rand(10,30)*2, half=whole/2;
+    if(t%5===3){q=`선분 AB의 길이가 ${whole}cm이고 M이 중점일 때 AM은?`;ans=half+"cm";opts=shuffle([half+"cm",(half+1)+"cm",(whole-2)+"cm",whole+"cm"])}
+    else if(t%5===4){let x=rand(2,10);q=`AB=${2*x+4}cm이고 M이 중점이다. AM의 길이는?`;ans=(x+2)+"cm";opts=shuffle([(x+2)+"cm",(2*x+2)+"cm",(x+4)+"cm",(2*x+4)+"cm"])}
+    else {let a=rand(4,15),b=rand(4,15);q=`AB=${a+b}cm, AC=${a}cm일 때 CB는?`;ans=b+"cm";opts=shuffle([a+"cm",b+"cm",(a+b)+"cm",(b+1)+"cm"])}
+  } else if(t<=50){
+    q="다음 중 두 직선의 위치 관계로 가능한 것은?";ans="평행";opts=shuffle(["평행","겹치면서 한 점에서만 만남","서로 다른 두 점에서 만남","교점이 항상 3개"])}
+  else if(t<=70){
+    let a=rand(20,80),b=rand(10,100-a);
+    if(t%5===0){q=`각 A가 ${a}°일 때 ${a}°의 각은 어떤 종류인가?`;ans=a<90?"예각":a===90?"직각":"둔각";opts=shuffle(["예각","직각","둔각","평각"])}
+    else {q=`두 각의 크기가 ${a}°와 ${b}°일 때 합은?`;ans=(a+b)+"°";opts=shuffle([(a+b)+"°",Math.abs(a-b)+"°",(180-a-b)+"°",(a*b)+"°"])}
+  } else if(t<=80){
+    let a=rand(30,80);q=`맞꼭지각 중 한 각이 ${a}°라면 마주 보는 각의 크기는?`;ans=a+"°";opts=shuffle([a+"°",(180-a)+"°",(90-a)+"°",(a+10)+"°"])}
+  else if(t<=90){
+    let a=rand(20,70);q=`${a*2}°인 각을 이등분하면 한 각의 크기는?`;ans=a+"°";opts=shuffle([a+"°",(a*2)+"°",(a/2)+"°",(90-a)+"°"])}
+  else {
+    let a=rand(10,70);q=`평행한 두 직선 사이의 거리가 ${a}cm이다. 두 직선 사이의 수직선분의 길이는?`;ans=a+"cm";opts=shuffle([a+"cm",(a+5)+"cm",(2*a)+"cm",(a/2)+"cm"])}
+  return {q,ans,opts};
 }
-function makeQuestion(type){
-  const d=type.difficulty, a=rand(1+d,9+d*4), b=rand(1+d,9+d*4);
-  const c=rand(1,9+d);
-  let ans, text;
-  const f=type.type_name.split(" ")[0];
-  if(type.unit.includes("소인수")) { let x=a*b; ans=x; text=`${a} × ${b} = ?`; }
-  else if(type.unit.includes("정수")||type.unit.includes("유리수")) { ans=a-b; text=`${a} - ${b} = ?`; }
-  else if(type.unit.includes("일차방정식")) { ans=(c+b)/a; text=`${a}x - ${b} = ${c}  에서 x = ?`; }
-  else if(type.unit.includes("부등식")) { ans=(c+b)/a; text=`${a}x - ${b} < ${c} 일 때 경계값 x = ? (실수)`; }
-  else if(type.unit.includes("식의 계산")||type.unit.includes("다항식")) { ans=a*b+a; text=`${a}(${b}+1) = ?`; }
-  else if(type.unit.includes("제곱근")) { const n=a*a; ans=a; text=`√${n} = ?`; }
-  else if(type.unit.includes("함수")) { ans=a*c+b; text=`f(x)=${a}x+${b}, f(${c}) = ?`; }
-  else if(type.unit.includes("수열")) { ans=a+4*b; text=`첫항 ${a}, 공차 ${b}인 등차수열의 5번째 항 = ?`; }
-  else if(type.unit.includes("확률")) { ans=`${a}/${a+b}`; text=`성공 ${a}개, 실패 ${b}개일 때 성공 확률 = ? (기약분수)`; }
-  else if(type.unit.includes("미분")) { ans=a; text=`f(x)=${a}x²+${b}x, f'(x)의 x항 계수 = ?`; }
-  else if(type.unit.includes("적분")) { ans=a; text=`∫ ${a} dx = ? 의 x의 계수는?`; }
-  else if(type.unit.includes("삼각")||type.unit.includes("삼각비")) { ans=a; text=`삼각비 연습: 기준값 ${a}, 단순 계산 결과 = ?`; }
-  else { ans=a*b+c; text=`${a} × ${b} + ${c} = ?`; }
-  return {text,ans};
-}
-function getTypes(){return data.problem_types.filter(x=>x.unit_no===currentUnit)}
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
 function newQuestion(){
-  const types=getTypes(); if(!types.length)return;
-  const key=types[rand(0,types.length-1)].id; const type=types.find(x=>x.id===key);
-  q={type,...makeQuestion(type)};$("question").textContent=q.text;
-  const mastery=state.mastery[q.type.id]||0;
-  $("typeInfo").textContent=`유형 ${q.type.type_no} / 100 · 숙련 ${mastery}`;
-  $("stage").textContent=`${DB[currentKey].name} · ${q.type.unit}`;
+ state.answered=false;$("nextBtn").disabled=true;
+ $("typeNo").textContent=String(state.type+1).padStart(3,"0");$("typeName").textContent=types[state.type];
+ setText("level",state.level);setText("combo",state.streak);setText("correct",state.correct);
+ setText("progress",state.need);
+ const p=makeQuestion();state.current=p;
+ $("question").textContent=p.q;$("answers").innerHTML="";
+ p.opts.forEach(o=>{let b=document.createElement("button");b.className="ans";b.textContent=o;b.onclick=()=>answer(o,b);$("answers").appendChild(b)});
 }
-function num(v){return Number(String(v).replace(/,/g,"").trim())}
-function attack(){
- if(!q)return;
- const input=$("answer").value.trim(); if(!input)return;
- const correct=typeof q.ans==="number"?Math.abs(num(input)-q.ans)<1e-9:input===String(q.ans);
- const id=q.type.id; state.mastery[id]=state.mastery[id]||0;
- if(correct){
-   state.mastery[id]++; state.xp+=10; const m=state.mastery[id];
-   const combo=Math.min(m,10), damage=80+q.type.difficulty*20+combo*20;
-   state.monsterHp=(state.monsterHp||1500)-damage; state.wins++;
-   $("combo").textContent=combo; toast(`⚔️ 정답! ${damage} DAMAGE`);
-   log(`⚔️ 정답 · ${q.type.type_name} · ${damage} 피해`);
-   if(m===2){toast("🔥 같은 유형 2연속 성공! 난이도 UP");log("🔥 TYPE COMBO ×2 · 다음 문제 난이도 상승");}
-   if(state.monsterHp<=0){state.monsterLv++;state.monsterHp=1200+state.monsterLv*300;toast("🏆 몬스터 처치!");log("🏆 몬스터 처치! 더 강한 몬스터 등장");}
+function answer(o,b){
+ if(state.answered)return;state.answered=true;
+ document.querySelectorAll(".ans").forEach(x=>x.disabled=true);
+ if(o===state.current.ans){
+   state.correct++;state.streak++;let mult=1+(state.level-1)*.1+(state.streak>=2?.25:0);let dmg=Math.round(100*mult);
+   state.enemy=Math.max(0,state.enemy-dmg);
+   $("monster").classList.remove("hit");void $("monster").offsetWidth;$("monster").classList.add("hit");
+   showDamage("-"+dmg,false);log(`정답! ${dmg} 데미지 → 몬스터`);
+   if(state.correct%2===0){state.level=Math.min(10,state.level+1);log(`LEVEL UP! 문제 유형 Lv.${state.level}`);setText("status",state.level===10?"최고 레벨 도전!":"문제 난이도 상승!")}
+   else setText("status",state.streak>=2?"COMBO ATTACK!":"공격 성공!");
  }else{
-   const dmg=8+q.type.difficulty*4+state.monsterLv*2; state.hp-=dmg;
-   $("combo").textContent=0; toast(`💥 오답! ${dmg} DAMAGE`);
-   log(`💥 오답 · 정답은 ${q.ans} · 내 HP -${dmg}`);
-   if(state.hp<=0){state.hp=100;state.xp=Math.max(0,state.xp-20);toast("☠️ 쓰러졌습니다. 다시 도전!");log("☠️ 회복하여 전투를 계속합니다.");}
+   state.streak=0;let dmg=rand(8,16);state.player=Math.max(0,state.player-dmg);
+   $("monster").classList.remove("attack");void $("monster").offsetWidth;$("monster").classList.add("attack");
+   showDamage("-"+dmg,true);log(`오답! ${dmg} 데미지 → 헌터`);
+   setText("status","피격! 정답은 "+state.current.ans);
  }
- state.level=1+Math.floor(state.xp/100); save(); render(); $("answer").value=""; newQuestion();
+ updateBars();$("nextBtn").disabled=false;
+ if(state.enemy<=0){setText("status","🎉 몬스터 처치!");$("nextBtn").disabled=true}
+ if(state.player<=0){setText("status","💀 쓰러졌습니다. 전투를 재시작하세요.");$("nextBtn").disabled=true}
 }
-function render(){
- const max=1200+state.monsterLv*300; state.monsterHp=state.monsterHp||max;
- $("enemyHp").textContent=`${Math.max(0,state.monsterHp)} / ${max}`;$("enemyBar").style.width=Math.max(0,state.monsterHp/max*100)+"%";
- $("monsterLv").textContent=state.monsterLv;$("monsterAtk").textContent=25+state.monsterLv*3;$("monsterDef").textContent=5+state.monsterLv;
- $("playerHp").textContent=`${state.hp} / 100`;$("playerBar").style.width=state.hp+"%";
- $("xpText").textContent=`${state.xp%100} / 100`;$("xpBar").style.width=(state.xp%100)+"%";
- $("monsterName").textContent=["천뢰룡","화염아룡","빙설괴수","암흑왕","폭풍룡"][state.monsterLv%5];
+function showDamage(t,bad){let d=$("damage");d.textContent=t;d.className="damage "+(bad?"bad ":"")+"show";setTimeout(()=>d.className="damage",850)}
+function updateBars(){
+ $("playerHp").style.width=state.player+"%";$("playerHpText").textContent=state.player+" / 100";
+ $("enemyHp").style.width=(state.enemy/10)+"%";$("enemyHpText").textContent=state.enemy+" / 1000";
+ setText("level",state.level);setText("combo",state.streak);setText("correct",state.correct);setText("progress",state.correct%2===0?2:1);
+ setText("damagePower",Math.round(100*(1+(state.level-1)*.1)));
 }
-$("db").innerHTML=Object.entries(DB).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join("");
-$("db").value=currentKey;
-$("db").onchange=e=>loadDB(e.target.value);
-$("unit").onchange=e=>{currentUnit=+e.target.value;newQuestion()};
-$("submit").onclick=attack;$("answer").onkeydown=e=>{if(e.key==="Enter")attack()};
-$("resetBtn").onclick=()=>{if(confirm("모든 진행도를 삭제할까요?")){localStorage.removeItem("mathMonsterHunter");location.reload()}};
-loadDB(currentKey).then(render);
+function resetGame(){state={type:rand(0,99),level:1,correct:0,streak:0,player:100,enemy:1000,answered:false,need:2};$("log").innerHTML="";setText("status","전투 시작!");updateBars();newQuestion()}
+newQuestion();updateBars();
 </script>
-</body></html>
+</body>
+</html>
